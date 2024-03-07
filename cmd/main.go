@@ -6,13 +6,14 @@ import (
 	controller "investor-site/pkg/contorllers"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 		panic(err)
@@ -35,8 +36,13 @@ func main() {
 	router.HandleFunc("/promo-code-checker", controller.PromoCodeChecker).Methods("POST", "OPTIONS")
 	router.HandleFunc("/payment-checker", controller.PaymentChecker).Methods("POST", "OPTIONS")
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	config.Connect()
 	fmt.Printf("Starting server on port.............. %d \n", 8080)
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":"+port, router)
 
 }
