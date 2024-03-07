@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"investor-site/pkg/config"
 	controller "investor-site/pkg/contorllers"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
