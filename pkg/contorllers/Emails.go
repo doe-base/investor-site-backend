@@ -16,14 +16,15 @@ import (
 )
 
 type PaymentPost struct {
-	Name            string `json:"name"`
-	Email           string `json:"email"`
-	Country         string `json:"country"`
-	Payment         string `json:"payment"`
-	Delivery        string `json:"delivery"`
-	PromoCode       string `json:"promocode"`
-	AccountUsername string `json:"accountusername"`
-	AccountPassword string `json:"accountpassword"`
+	Name                string `json:"name"`
+	Email               string `json:"email"`
+	Country             string `json:"country"`
+	Payment             string `json:"payment"`
+	Delivery            string `json:"delivery"`
+	PromoCode           string `json:"promocode"`
+	AccountEmail        string `json:"accountemail"`
+	AccountUsername     string `json:"accountusername"`
+	AccountActivationId string `json:"accountactivationid"`
 
 	ServiceTitle  string  `json:"servicetitle"`
 	PackageName   string  `json:"packagename"`
@@ -98,8 +99,9 @@ func HandleChoosePaymentMethodSubmit(w http.ResponseWriter, r *http.Request) {
 		newPaymentObject.Payment = newPayment.Payment
 		newPaymentObject.Delivery = newPayment.Delivery
 		newPaymentObject.PromoCode = newPayment.PromoCode
+		newPaymentObject.AccountEmail = newPayment.AccountEmail
 		newPaymentObject.AccountUsername = newPayment.AccountUsername
-		newPaymentObject.AccountPassword = newPayment.AccountPassword
+		newPaymentObject.AccountActivationId = newPayment.AccountActivationId
 		newPaymentObject.ServiceTitle = newPayment.ServiceTitle
 		newPaymentObject.PackageName = newPayment.PackageName
 		newPaymentObject.Price = newPayment.Price
