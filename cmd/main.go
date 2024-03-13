@@ -4,20 +4,21 @@ import (
 	"fmt"
 	"investor-site/pkg/config"
 	controller "investor-site/pkg/contorllers"
-	"log"
+
+	// "log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-		panic(err)
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// 	panic(err)
+	// }
 
 	var router *mux.Router = mux.NewRouter()
 
