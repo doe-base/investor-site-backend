@@ -46,6 +46,13 @@ type FailureMessage struct {
 	Message     string `json:"message"`
 }
 
+type BillObj struct {
+	Id         int32  `json:"id"`
+	Completed  bool   `json:"completed"`
+	PaymentFor string `json:"paymentfor"`
+	Status     string `json:"status"`
+}
+
 type PaymentObject struct {
 	PaymentPost
 	Verified     bool   `json:"verified"`
@@ -55,6 +62,8 @@ type PaymentObject struct {
 	Status    string `json:"status"`
 	Date      string `json:"date"`
 	Completed bool   `json:"completed"`
+
+	Bills []BillObj `json:"bills"`
 }
 
 func generateRandomNumber(digits int) int {

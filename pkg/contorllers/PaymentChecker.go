@@ -10,7 +10,13 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+type PaymentAddressObject struct {
+	PaymentObject PaymentObject `json:"paymentobject"`
+	Address       []primitive.M `json:"address"`
+}
 
 type InputedPaymentId struct {
 	PaymentId string `json:"paymentid"`
@@ -38,7 +44,29 @@ func PaymentChecker(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(newVerifySuccessMessage)
 			fmt.Println(err)
 		} else {
-			json.NewEncoder(w).Encode(paymentObject)
+			var newPaymentAddressObject PaymentAddressObject
+			newPaymentAddressObject.PaymentObject = paymentObject
+
+			theCollection := config.AddressCollection()
+			cursor, err := theCollection.Find(ctx, bson.M{})
+
+			if err != nil {
+				newVerifySuccessMessage.Success = false
+
+				json.NewEncoder(w).Encode(newVerifySuccessMessage)
+				fmt.Println(err)
+			} else {
+				var content []bson.M
+				if err = cursor.All(ctx, &content); err != nil {
+					newVerifySuccessMessage.Success = false
+
+					json.NewEncoder(w).Encode(newVerifySuccessMessage)
+					fmt.Println(err)
+				} else {
+					newPaymentAddressObject.Address = content
+					json.NewEncoder(w).Encode(newPaymentAddressObject)
+				}
+			}
 		}
 	}
 }

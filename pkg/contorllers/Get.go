@@ -315,3 +315,66 @@ func GetFortniteStackedAccountProducts(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+// Get Reviews
+func GetReviews(w http.ResponseWriter, r *http.Request) {
+	utils.EnableCors(w, r)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	theCollection := config.ReviewsCollection()
+	cursor, err := theCollection.Find(ctx, bson.M{})
+	if err != nil {
+		var newfailureMessage FailureMessage
+		newfailureMessage.Success = false
+		newfailureMessage.ErrorNumber = 9
+		newfailureMessage.Message = "could not get reviews"
+
+		json.NewEncoder(w).Encode(newfailureMessage)
+		panic(err)
+	} else {
+		var content []bson.M
+		if err = cursor.All(ctx, &content); err != nil {
+			var newfailureMessage FailureMessage
+			newfailureMessage.Success = false
+			newfailureMessage.ErrorNumber = 9
+			newfailureMessage.Message = "could not get reviews"
+
+			json.NewEncoder(w).Encode(newfailureMessage)
+			panic(err)
+		} else {
+			json.NewEncoder(w).Encode(content)
+		}
+	}
+}
+
+func GetR6StackedAccountProducts(w http.ResponseWriter, r *http.Request) {
+	utils.EnableCors(w, r)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	theCollection := config.R6StackedAccount()
+	cursor, err := theCollection.Find(ctx, bson.M{})
+	if err != nil {
+		var newfailureMessage FailureMessage
+		newfailureMessage.Success = false
+		newfailureMessage.ErrorNumber = 02
+		newfailureMessage.Message = "could not get products"
+
+		json.NewEncoder(w).Encode(newfailureMessage)
+		panic(err)
+	} else {
+		var content []bson.M
+		if err = cursor.All(ctx, &content); err != nil {
+			var newfailureMessage FailureMessage
+			newfailureMessage.Success = false
+			newfailureMessage.ErrorNumber = 02
+			newfailureMessage.Message = "could not get products"
+
+			json.NewEncoder(w).Encode(newfailureMessage)
+			panic(err)
+		} else {
+			json.NewEncoder(w).Encode(content)
+		}
+	}
+}

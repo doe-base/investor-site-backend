@@ -5,20 +5,20 @@ import (
 	"investor-site/pkg/config"
 	controller "investor-site/pkg/contorllers"
 
-	// "log"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// 	panic(err)
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+		panic(err)
+	}
 
 	var router *mux.Router = mux.NewRouter()
 
@@ -32,10 +32,14 @@ func main() {
 	router.HandleFunc("/grand-theft-auto-mod-menu", controller.GetGTAModMenuProducts).Methods("GET")
 	router.HandleFunc("/grand-theft-auto-money-drop", controller.GetGTAMoneyDropProducts).Methods("GET")
 	router.HandleFunc("/grand-theft-auto-stacked-account", controller.GetGTAStackedAccountProducts).Methods("GET")
+	router.HandleFunc("/rainbow-six-stacked-account", controller.GetR6StackedAccountProducts).Methods("GET")
+	router.HandleFunc("/get-reviews", controller.GetReviews).Methods("GET")
+
 	router.HandleFunc("/subit-form-request", controller.HandleChoosePaymentMethodSubmit).Methods("POST", "OPTIONS")
 	router.HandleFunc("/verification", controller.Verification).Methods("POST", "OPTIONS")
 	router.HandleFunc("/promo-code-checker", controller.PromoCodeChecker).Methods("POST", "OPTIONS")
 	router.HandleFunc("/payment-checker", controller.PaymentChecker).Methods("POST", "OPTIONS")
+	router.HandleFunc("/update-payment", controller.UpdatePayment).Methods("POST", "OPTIONS")
 
 	port := os.Getenv("PORT")
 	if port == "" {
