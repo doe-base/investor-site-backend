@@ -27,7 +27,7 @@ func PromoCodeChecker(w http.ResponseWriter, r *http.Request) {
 		defer cancel()
 		theCollection := config.PromoCodeCollection()
 
-		filter := bson.M{"promocode": newInputedPropmoCode.PromoCode}
+		filter := bson.M{newInputedPropmoCode.PromoCode: newInputedPropmoCode.PromoCode}
 		var promoCode InputedPropmoCode
 		err := theCollection.FindOne(ctx, filter).Decode(&promoCode)
 		var newVerifySuccessMessage VerifySuccessMessage
