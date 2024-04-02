@@ -151,6 +151,7 @@ func HandleChoosePaymentMethodSubmit(w http.ResponseWriter, r *http.Request) {
 
 				json.NewEncoder(w).Encode(newfailureMessage)
 				fmt.Println(newfailureMessage.Message)
+				fmt.Println(err)
 				panic(err)
 			} else {
 
