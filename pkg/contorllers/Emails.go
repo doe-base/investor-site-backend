@@ -88,7 +88,7 @@ func paymentIdGenerator(paymentIdNumber int, serviceCode string, game string) st
 	return id
 }
 
-var appPassword = os.Getenv("APP_PASSWORD")
+var appPassword = os.Getenv("ABEG")
 
 func HandleChoosePaymentMethodSubmit(w http.ResponseWriter, r *http.Request) {
 	utils.EnableCors(w, r)
