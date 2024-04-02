@@ -8,6 +8,7 @@ import (
 	"investor-site/pkg/utils"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -87,6 +88,8 @@ func paymentIdGenerator(paymentIdNumber int, serviceCode string, game string) st
 	return id
 }
 
+var appPassword = os.Getenv("APP_PASSWORD")
+
 func HandleChoosePaymentMethodSubmit(w http.ResponseWriter, r *http.Request) {
 	utils.EnableCors(w, r)
 	paymentIdNumber := generateRandomNumber(1000000000)
@@ -139,7 +142,7 @@ func HandleChoosePaymentMethodSubmit(w http.ResponseWriter, r *http.Request) {
 			m.SetHeader("Subject", "Payment Confirmation")
 			m.SetBody("text/html", "Hello <b>"+newPayment.Name+"</b> <br></br><br></br><br></br> You have initiated a payment for "+newPayment.ServiceTitle+": <br></br><br></br> Payment Id: <b>"+paymentId+"</b>   <br></br> Package: <b>"+newPayment.PackageName+"</b>   <br></br> Price: <b>$"+strconv.Itoa(newPayment.Price)+".00</b>   <br></br> Delivery Method: <b>"+newPayment.Delivery+"</b> <br></br> Payment Method: <b>"+newPayment.Payment+"</b>   <br></br><br></br>  Use the code below to authenticate payment <br></br> <h1>"+strconv.Itoa(paymentToken)+"</h1> <br></br><br></br> If you didn't initiate this payment, kindly delete this message, Thank you. Star Gaming Store support team.")
 
-			d := mail.NewDialer("smtp.hostinger.com", 465, "noreply@stargamingstore.shop", "Slowmo29$$$")
+			d := mail.NewDialer("smtp.hostinger.com", 465, "noreply@stargamingstore.shop", appPassword)
 			d.StartTLSPolicy = mail.MandatoryStartTLS
 
 			if err := d.DialAndSend(m); err != nil {
