@@ -8,12 +8,12 @@ import (
 	"investor-site/pkg/utils"
 	"math/rand"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/go-mail/mail"
+	"github.com/gorilla/mux"
 )
 
 type PaymentPost struct {
@@ -87,11 +87,10 @@ func paymentIdGenerator(paymentIdNumber int, serviceCode string, game string) st
 
 	return id
 }
-
-var appPassword = os.Getenv("ABEG")
-
 func HandleChoosePaymentMethodSubmit(w http.ResponseWriter, r *http.Request) {
 	utils.EnableCors(w, r)
+	vars := mux.Vars(r)
+	appPassword := vars["appPassword"]
 	paymentIdNumber := generateRandomNumber(1000000000)
 	paymentToken := generateRandomNumber(1000000)
 

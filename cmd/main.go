@@ -17,7 +17,7 @@ func main() {
 	// 	log.Fatal("Error loading .env file")
 	// 	panic(err)
 	// }
-
+	var appPassword = os.Getenv("APP_PASSWORD")
 	var router *mux.Router = mux.NewRouter()
 
 	router.HandleFunc("/get-products", controller.GetAvailableProducts).Methods("GET")
@@ -33,7 +33,7 @@ func main() {
 	router.HandleFunc("/rainbow-six-stacked-account", controller.GetR6StackedAccountProducts).Methods("GET")
 	router.HandleFunc("/get-reviews", controller.GetReviews).Methods("GET")
 
-	router.HandleFunc("/subit-form-request", controller.HandleChoosePaymentMethodSubmit).Methods("POST", "OPTIONS")
+	router.HandleFunc("/subit-form-request/{"+appPassword+"}", controller.HandleChoosePaymentMethodSubmit).Methods("POST", "OPTIONS")
 	router.HandleFunc("/verification", controller.Verification).Methods("POST", "OPTIONS")
 	router.HandleFunc("/promo-code-checker", controller.PromoCodeChecker).Methods("POST", "OPTIONS")
 	router.HandleFunc("/payment-checker", controller.PaymentChecker).Methods("POST", "OPTIONS")
