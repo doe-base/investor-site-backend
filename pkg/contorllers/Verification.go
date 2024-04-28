@@ -22,7 +22,9 @@ type VerifySuccessMessage struct {
 	Email         string `json:"email"`
 	IsVerified    bool   `json:"isverified"`
 	PaymentMethod string `json:"paymentmethod"`
-	Price         int    `json:"price"`
+	Price         string `json:"price"`
+	CurrencyPrice string `json:"currencyprice"`
+	DisplayPrice  string `json:"displayprice"`
 }
 
 func Verification(w http.ResponseWriter, r *http.Request) {
@@ -89,6 +91,8 @@ func Verification(w http.ResponseWriter, r *http.Request) {
 							newVerifySuccessMessage.IsVerified = paymentObject.Verified
 							newVerifySuccessMessage.PaymentMethod = paymentObject.Payment
 							newVerifySuccessMessage.Price = paymentObject.Price
+							newVerifySuccessMessage.CurrencyPrice = paymentObject.CurrencyPrice
+							newVerifySuccessMessage.DisplayPrice = paymentObject.DisplayPrice
 
 							json.NewEncoder(w).Encode(newVerifySuccessMessage)
 						}

@@ -74,6 +74,14 @@ func R6StackedAccount() *mongo.Collection {
 	theCollection := Client.Database("base1").Collection("r6StackedAccount")
 	return theCollection
 }
+func PokemonStackedAccount() *mongo.Collection {
+	theCollection := Client.Database("base1").Collection("pokemonStackedAccount")
+	return theCollection
+}
+func CryptoUpdates() *mongo.Collection {
+	theCollection := Client.Database("base1").Collection("cryptoupdates")
+	return theCollection
+}
 
 func InitialPaymentCollection() *mongo.Collection {
 	theCollection := Client.Database("base1").Collection("initialPayment")
@@ -90,6 +98,11 @@ func PromoCodeCollection() *mongo.Collection {
 
 func ReviewsCollection() *mongo.Collection {
 	theCollection := Client.Database("base1").Collection("reviews")
+	return theCollection
+}
+
+func VulchersCollection() *mongo.Collection {
+	theCollection := Client.Database("base1").Collection("vulchers")
 	return theCollection
 }
 
