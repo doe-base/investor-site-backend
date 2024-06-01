@@ -4,20 +4,22 @@ import (
 	"fmt"
 	"investor-site/pkg/config"
 	controller "investor-site/pkg/contorllers"
+	"log"
 
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	// Only for local
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// 	panic(err)
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+		panic(err)
+	}
 
 	var router *mux.Router = mux.NewRouter()
 
@@ -49,6 +51,11 @@ func main() {
 	router.HandleFunc("/update-payment", controller.UpdatePayment).Methods("POST", "OPTIONS")
 
 	router.HandleFunc("/get-crypto-updates", controller.GetCryptoUpdates).Methods("GET")
+	router.HandleFunc("/validate-paymentid", controller.ValidatePaymentID).Methods("POST", "OPTIONS")
+	router.HandleFunc("/cart-submit", controller.CartSubmit).Methods("POST", "OPTIONS")
+	router.HandleFunc("/get-checkout-info", controller.GetOrderData).Methods("POST", "OPTIONS")
+
+	router.HandleFunc("/get-initial-payment-data", controller.GetInitialPaymentData).Methods("POST", "OPTIONS")
 
 	port := os.Getenv("PORT")
 	if port == "" {

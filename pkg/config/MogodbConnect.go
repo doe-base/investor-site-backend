@@ -110,3 +110,8 @@ func AddressCollection() *mongo.Collection {
 	theCollection := Client.Database("base1").Collection("address")
 	return theCollection
 }
+
+func CartCollection() *mongo.Collection {
+	theCollection := Client.Database("account-tools").Collection("cart")
+	return theCollection
+}

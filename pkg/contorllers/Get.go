@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"investor-site/pkg/config"
 	"investor-site/pkg/utils"
 	"net/http"
@@ -471,4 +472,58 @@ func GetCryptoUpdates(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(content)
 		}
 	}
+}
+
+func GetInitialPaymentData(w http.ResponseWriter, r *http.Request) {
+	utils.EnableCors(w, r)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	theCollection := config.InitialPaymentCollection()
+
+	var newPaymentId ResendVerficationCodeObject
+	json.NewDecoder(r.Body).Decode(&newPaymentId)
+
+	if newPaymentId.PaymentID != "" {
+
+		filter := bson.M{"paymentid": newPaymentId.PaymentID}
+		var newPaymentObject PaymentObject
+		err2 := theCollection.FindOne(ctx, filter).Decode(&newPaymentObject)
+
+		if err2 != nil {
+			var newfailureMessage FailureMessage
+			newfailureMessage.Success = false
+			newfailureMessage.ErrorNumber = 4
+			newfailureMessage.Message = "fail to get payment obhect"
+
+			json.NewEncoder(w).Encode(newfailureMessage)
+			fmt.Println(newfailureMessage.Message)
+		} else {
+
+			theCollection := config.CryptoUpdates()
+			cursor, err := theCollection.Find(ctx, bson.M{})
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				var content []bson.M
+				if err = cursor.All(ctx, &content); err != nil {
+					var newfailureMessage FailureMessage
+					newfailureMessage.Success = false
+					newfailureMessage.ErrorNumber = 03
+					newfailureMessage.Message = "could not get crypto updates"
+
+					json.NewEncoder(w).Encode(newfailureMessage)
+					panic(err)
+				} else {
+					var newGetOrderDataResult GetOrderDataResult
+					newGetOrderDataResult.PaymentObject = newPaymentObject
+					newGetOrderDataResult.CryptoRates = content
+					json.NewEncoder(w).Encode(newGetOrderDataResult)
+				}
+			}
+
+		}
+
+	}
+
 }

@@ -21,7 +21,7 @@ type PaymentPost struct {
 	Name                string `json:"name"`
 	Email               string `json:"email"`
 	Country             string `json:"country"`
-	Payment             string `json:"payment"` //
+	Payment             string `json:"payment"`
 	Delivery            string `json:"delivery"`
 	PromoCode           string `json:"promocode"`
 	AccountEmail        string `json:"accountemail"`
@@ -30,16 +30,16 @@ type PaymentPost struct {
 
 	ServiceTitle  string  `json:"servicetitle"`
 	PackageName   string  `json:"packagename"`
-	Price         string  `json:"price"`         //
-	OrigianlPrice float64 `json:"originalprice"` //
+	Price         string  `json:"price"`
+	OrigianlPrice float64 `json:"originalprice"`
 
-	PackageTire int    `json:"packagetire"` //
-	Game        string `json:"game"`        //
-	SerivceCode string `json:"servicecode"` //
+	PackageTire int    `json:"packagetire"`
+	Game        string `json:"game"`
+	SerivceCode string `json:"servicecode"`
 
-	CurrencyChoose string `json:"currencychoose"` //
-	CurrencyPrice  string `json:"currencyprice"`  //
-	DisplayPrice   string `json:"displayprice"`   //
+	CurrencyChoose string `json:"currencychoose"`
+	CurrencyPrice  string `json:"currencyprice"`
+	DisplayPrice   string `json:"displayprice"`
 }
 type SuccessMessage struct {
 	Success    bool   `json:"success"`

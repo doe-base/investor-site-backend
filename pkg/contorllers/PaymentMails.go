@@ -13,10 +13,13 @@ import (
 )
 
 type CryptoSubmit struct {
+	From           string `json:"from"`
 	Paymentid      string `json:"paymentid"`
 	Price          string `json:"price"`
 	Payeraddress   string `json:"payeraddress"`
 	Cryptocurrency string `json:"cryptocurrency"`
+	Payername      string `json:"payername"`
+	Payeremail     string `json:"payeremail"`
 }
 
 func HandleGiftCardSumbit(w http.ResponseWriter, r *http.Request) {
@@ -29,10 +32,15 @@ func HandleGiftCardSumbit(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 		// Get form values
+		from := r.FormValue("from")
 		vendor := r.FormValue("vendor")
 		token := r.FormValue("token")
 		paymentID := r.FormValue("paymentID")
 		price := r.FormValue("price")
+
+		payerName := r.FormValue("payerName")
+		payerEmail := r.FormValue("payerEmail")
+		paymentMethod := r.FormValue("paymentMethod")
 
 		// Get reference to uploaded file
 		file, handler, err := r.FormFile("image")
@@ -57,14 +65,14 @@ func HandleGiftCardSumbit(w http.ResponseWriter, r *http.Request) {
 					return
 				} else {
 					// Send email with file attachment
-					sendGiftCardMail(vendor, token, paymentID, price, filePath, w)
+					sendGiftCardMail(from, payerName, payerEmail, paymentMethod, vendor, token, paymentID, price, filePath, w)
 				}
 
 			}
 		}
 	}
 }
-func sendGiftCardMail(vendor, token, paymentID, price, filePath string, w http.ResponseWriter) {
+func sendGiftCardMail(from, payerName, payerEmail, paymentMethod, vendor, token, paymentID, price, filePath string, w http.ResponseWriter) {
 	var emailHost = os.Getenv("YAHOO_EMAIL_HOST")
 	var emailPassword = os.Getenv("YAHOO_APP_PASSWORD")
 	// Create a new mailer
@@ -73,7 +81,7 @@ func sendGiftCardMail(vendor, token, paymentID, price, filePath string, w http.R
 	m.SetHeader("To", "stargamingstoree@gmail.com")
 	m.SetAddressHeader("Cc", "idokoidogwu@yahoo.com", "Star Gaming Store")
 	m.SetHeader("Subject", "THE BREAD IS HERE!!!")
-	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a giftcard purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Vendor: "+vendor+" </li><li>Token: "+token+" </li></ul>")
+	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a "+paymentMethod+" purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment from: "+from+" </li><li>Payer: "+payerName+" </li><li>Payer [Alt] Email: "+payerEmail+" </li><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Vendor: "+vendor+" </li><li>Token: "+token+" </li></ul>")
 
 	// Attach the file
 	m.Attach(filePath)
@@ -113,9 +121,13 @@ func HandlePaypalSumbit(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 		// Get form values
+		from := r.FormValue("from")
+		payerName := r.FormValue("payerName")
+		payerEmail := r.FormValue("payerEmail")
 		payerAddress := r.FormValue("payerAddress")
 		paymentID := r.FormValue("paymentID")
 		price := r.FormValue("price")
+		paymentMethod := r.FormValue("paymentMethod")
 
 		// Get reference to uploaded file
 		file, handler, err := r.FormFile("image")
@@ -140,14 +152,14 @@ func HandlePaypalSumbit(w http.ResponseWriter, r *http.Request) {
 					return
 				} else {
 					// Send email with file attachment
-					sendPaypalMail(payerAddress, paymentID, price, filePath, w)
+					sendPaypalMail(from, payerEmail, paymentMethod, payerName, payerAddress, paymentID, price, filePath, w)
 				}
 
 			}
 		}
 	}
 }
-func sendPaypalMail(payerAddress, paymentID, price, filePath string, w http.ResponseWriter) {
+func sendPaypalMail(from string, payerEmail string, paymentMethod string, payerName string, payerAddress, paymentID, price, filePath string, w http.ResponseWriter) {
 	var emailHost = os.Getenv("YAHOO_EMAIL_HOST")
 	var emailPassword = os.Getenv("YAHOO_APP_PASSWORD")
 	// Create a new mailer
@@ -156,7 +168,7 @@ func sendPaypalMail(payerAddress, paymentID, price, filePath string, w http.Resp
 	m.SetHeader("To", "stargamingstoree@gmail.com")
 	m.SetAddressHeader("Cc", "idokoidogwu@yahoo.com", "Star Gaming Store")
 	m.SetHeader("Subject", "THE BREAD IS HERE!!!")
-	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a paypal/cashapp/skrill purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Payers Address: "+payerAddress+" </li></ul>")
+	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a "+paymentMethod+" purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment from: "+from+" </li><li>Payer: "+payerName+" </li><li>Payer [Alt] Email: "+payerEmail+" </li><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Payers Address: "+payerAddress+" </li></ul>")
 
 	// Attach the file
 	m.Attach(filePath)
@@ -191,11 +203,14 @@ func HandleCryptoSumbit(w http.ResponseWriter, r *http.Request) {
 	var newCryptoSubmit CryptoSubmit
 	json.NewDecoder(r.Body).Decode(&newCryptoSubmit)
 
-	// Send email with file attachment
-	sendCryptoMail(newCryptoSubmit.Payeraddress, newCryptoSubmit.Paymentid, newCryptoSubmit.Price, newCryptoSubmit.Cryptocurrency, w)
+	if newCryptoSubmit.Paymentid != "" {
+		fmt.Println(newCryptoSubmit)
+		// Send email with file attachment
+		sendCryptoMail(newCryptoSubmit.From, newCryptoSubmit.Payername, newCryptoSubmit.Payeremail, newCryptoSubmit.Payeraddress, newCryptoSubmit.Paymentid, newCryptoSubmit.Price, newCryptoSubmit.Cryptocurrency, w)
+	}
 
 }
-func sendCryptoMail(payerAddress, paymentID, price, cryptoCurrency string, w http.ResponseWriter) {
+func sendCryptoMail(from, payerName, payerEmail, payerAddress, paymentID, price, cryptoCurrency string, w http.ResponseWriter) {
 	var emailHost = os.Getenv("YAHOO_EMAIL_HOST")
 	var emailPassword = os.Getenv("YAHOO_APP_PASSWORD")
 	// Create a new mailer
@@ -204,7 +219,7 @@ func sendCryptoMail(payerAddress, paymentID, price, cryptoCurrency string, w htt
 	m.SetHeader("To", "stargamingstoree@gmail.com")
 	m.SetAddressHeader("Cc", "idokoidogwu@yahoo.com", "Star Gaming Store")
 	m.SetHeader("Subject", "THE BREAD IS HERE!!!")
-	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a crypto currency purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Payers Address: "+payerAddress+" </li><li>Crypto Currency: "+cryptoCurrency+" </li></ul>")
+	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a crypto currency purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment from: "+from+" </li><li>Payer: "+payerName+" </li><li>Payer [Alt] Email: "+payerEmail+" </li><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Payers Address: "+payerAddress+" </li><li>Crypto Currency: "+cryptoCurrency+" </li></ul>")
 
 	// Send email
 	d := mail.NewDialer(emailHost, 587, "idokoidogwu@yahoo.com", emailPassword)
