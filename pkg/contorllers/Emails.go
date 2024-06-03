@@ -59,6 +59,7 @@ type BillObj struct {
 	Completed  bool   `json:"completed"`
 	PaymentFor string `json:"paymentfor"`
 	Status     string `json:"status"`
+	Price      string `json:"price"`
 }
 
 type PaymentObject struct {
