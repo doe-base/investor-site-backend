@@ -52,6 +52,7 @@ func main() {
 	router.HandleFunc("/validate-paymentid", controller.ValidatePaymentID).Methods("POST", "OPTIONS")
 	router.HandleFunc("/cart-submit", controller.CartSubmit).Methods("POST", "OPTIONS")
 	router.HandleFunc("/get-checkout-info", controller.GetOrderData).Methods("POST", "OPTIONS")
+	router.HandleFunc("/get-checkout-info-fot-account-tools", controller.GetOrderDataForAccountTools).Methods("POST", "OPTIONS")
 
 	router.HandleFunc("/get-initial-payment-data", controller.GetInitialPaymentData).Methods("POST", "OPTIONS")
 

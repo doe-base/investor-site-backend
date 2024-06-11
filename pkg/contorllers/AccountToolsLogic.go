@@ -157,3 +157,54 @@ func GetOrderData(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func GetOrderDataForAccountTools(w http.ResponseWriter, r *http.Request) {
+	utils.EnableCors(w, r)
+
+	var newTempPaymentID TempPaymentID
+	json.NewDecoder(r.Body).Decode(&newTempPaymentID)
+
+	if newTempPaymentID.TempPaymentID != "" {
+		cartCollection := config.CartCollection()
+		initialPaymentCollectionForCar := config.InitialPaymentCollectionForCart()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		filter := bson.M{"temppaymentid": newTempPaymentID.TempPaymentID}
+		var cartSubmitInputOpject CartSubmitInput
+		err := cartCollection.FindOne(ctx, filter).Decode(&cartSubmitInputOpject)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			filter := bson.M{"paymentid": cartSubmitInputOpject.PaymentidInput}
+			var newPaymentObject PaymentObject
+			err := initialPaymentCollectionForCar.FindOne(ctx, filter).Decode(&newPaymentObject)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				theCollection := config.CryptoUpdates()
+				cursor, err := theCollection.Find(ctx, bson.M{})
+				if err != nil {
+					fmt.Println(err)
+				} else {
+					var content []bson.M
+					if err = cursor.All(ctx, &content); err != nil {
+						var newfailureMessage FailureMessage
+						newfailureMessage.Success = false
+						newfailureMessage.ErrorNumber = 03
+						newfailureMessage.Message = "could not get crypto updates"
+
+						json.NewEncoder(w).Encode(newfailureMessage)
+						panic(err)
+					} else {
+						var newGetOrderDataResult GetOrderDataResult
+						newGetOrderDataResult.CartSubmitInput = cartSubmitInputOpject
+						newGetOrderDataResult.PaymentObject = newPaymentObject
+						newGetOrderDataResult.CryptoRates = content
+						json.NewEncoder(w).Encode(newGetOrderDataResult)
+					}
+				}
+			}
+		}
+	}
+}

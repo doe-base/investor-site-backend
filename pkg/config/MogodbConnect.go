@@ -115,3 +115,7 @@ func CartCollection() *mongo.Collection {
 	theCollection := Client.Database("account-tools").Collection("cart")
 	return theCollection
 }
+func InitialPaymentCollectionForCart() *mongo.Collection {
+	theCollection := Client.Database("base1").Collection("initialPaymentForCart")
+	return theCollection
+}
