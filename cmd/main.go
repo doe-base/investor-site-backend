@@ -56,6 +56,8 @@ func main() {
 
 	router.HandleFunc("/get-initial-payment-data", controller.GetInitialPaymentData).Methods("POST", "OPTIONS")
 
+	router.HandleFunc("/mail-list-sub", controller.MailListSub).Methods("POST", "OPTIONS")
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

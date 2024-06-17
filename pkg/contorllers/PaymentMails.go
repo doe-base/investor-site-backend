@@ -27,7 +27,7 @@ func HandleGiftCardSumbit(w http.ResponseWriter, r *http.Request) {
 	// Parse multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB maximum file size
 	if err != nil {
-		http.Error(w, "Failed to parse form", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	} else {
 
@@ -73,13 +73,15 @@ func HandleGiftCardSumbit(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func sendGiftCardMail(from, payerName, payerEmail, paymentMethod, vendor, token, paymentID, price, filePath string, w http.ResponseWriter) {
-	var emailHost = os.Getenv("YAHOO_EMAIL_HOST")
-	var emailPassword = os.Getenv("YAHOO_APP_PASSWORD")
+	var emailAdd = os.Getenv("EMAIL")
+	var emailPassword = os.Getenv("APP_PASSWORD")
+	var emailHost = os.Getenv("EMAIL_HOST")
+
 	// Create a new mailer
 	m := mail.NewMessage()
-	m.SetHeader("From", "idokoidogwu@yahoo.com")
+	m.SetHeader("From", emailAdd)
 	m.SetHeader("To", "stargamingstoree@gmail.com")
-	m.SetAddressHeader("Cc", "idokoidogwu@yahoo.com", "Star Gaming Store")
+	m.SetAddressHeader("Cc", emailAdd, "Star Gaming Store")
 	m.SetHeader("Subject", "THE BREAD IS HERE!!!")
 	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a "+paymentMethod+" purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment from: "+from+" </li><li>Payer: "+payerName+" </li><li>Payer [Alt] Email: "+payerEmail+" </li><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Vendor: "+vendor+" </li><li>Token: "+token+" </li></ul>")
 
@@ -87,8 +89,8 @@ func sendGiftCardMail(from, payerName, payerEmail, paymentMethod, vendor, token,
 	m.Attach(filePath)
 
 	// Send email
-	d := mail.NewDialer(emailHost, 587, "idokoidogwu@yahoo.com", emailPassword)
-	d.Timeout = 30 * time.Second
+	d := mail.NewDialer(emailHost, 465, "noreply@stargamingstore.shop", emailPassword)
+	d.Timeout = 120 * time.Second
 	d.StartTLSPolicy = mail.MandatoryStartTLS
 	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -116,7 +118,7 @@ func HandlePaypalSumbit(w http.ResponseWriter, r *http.Request) {
 	// Parse multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB maximum file size
 	if err != nil {
-		http.Error(w, "Failed to parse form", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	} else {
 
@@ -160,13 +162,14 @@ func HandlePaypalSumbit(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func sendPaypalMail(from string, payerEmail string, paymentMethod string, payerName string, payerAddress, paymentID, price, filePath string, w http.ResponseWriter) {
-	var emailHost = os.Getenv("YAHOO_EMAIL_HOST")
-	var emailPassword = os.Getenv("YAHOO_APP_PASSWORD")
+	var emailAdd = os.Getenv("EMAIL")
+	var emailPassword = os.Getenv("APP_PASSWORD")
+	var emailHost = os.Getenv("EMAIL_HOST")
 	// Create a new mailer
 	m := mail.NewMessage()
-	m.SetHeader("From", "idokoidogwu@yahoo.com")
+	m.SetHeader("From", emailAdd)
 	m.SetHeader("To", "stargamingstoree@gmail.com")
-	m.SetAddressHeader("Cc", "idokoidogwu@yahoo.com", "Star Gaming Store")
+	m.SetAddressHeader("Cc", emailAdd, "Star Gaming Store")
 	m.SetHeader("Subject", "THE BREAD IS HERE!!!")
 	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a "+paymentMethod+" purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment from: "+from+" </li><li>Payer: "+payerName+" </li><li>Payer [Alt] Email: "+payerEmail+" </li><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Payers Address: "+payerAddress+" </li></ul>")
 
@@ -174,8 +177,8 @@ func sendPaypalMail(from string, payerEmail string, paymentMethod string, payerN
 	m.Attach(filePath)
 
 	// Send email
-	d := mail.NewDialer(emailHost, 587, "idokoidogwu@yahoo.com", emailPassword)
-	d.Timeout = 30 * time.Second
+	d := mail.NewDialer(emailHost, 465, "noreply@stargamingstore.shop", emailPassword)
+	d.Timeout = 120 * time.Second
 	d.StartTLSPolicy = mail.MandatoryStartTLS
 	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -211,19 +214,20 @@ func HandleCryptoSumbit(w http.ResponseWriter, r *http.Request) {
 
 }
 func sendCryptoMail(from, payerName, payerEmail, payerAddress, paymentID, price, cryptoCurrency string, w http.ResponseWriter) {
-	var emailHost = os.Getenv("YAHOO_EMAIL_HOST")
-	var emailPassword = os.Getenv("YAHOO_APP_PASSWORD")
+	var emailAdd = os.Getenv("EMAIL")
+	var emailPassword = os.Getenv("APP_PASSWORD")
+	var emailHost = os.Getenv("EMAIL_HOST")
 	// Create a new mailer
 	m := mail.NewMessage()
-	m.SetHeader("From", "idokoidogwu@yahoo.com")
+	m.SetHeader("From", emailAdd)
 	m.SetHeader("To", "stargamingstoree@gmail.com")
-	m.SetAddressHeader("Cc", "idokoidogwu@yahoo.com", "Star Gaming Store")
+	m.SetAddressHeader("Cc", emailAdd, "Star Gaming Store")
 	m.SetHeader("Subject", "THE BREAD IS HERE!!!")
 	m.SetBody("text/html", "<h1>Hello Daniel & Investor,</h1><br><p>someone made a crypto currency purchase, <strong>Congratulations!!!</strong></p><br><p>details are as followed</p><br><ul><li>Payment from: "+from+" </li><li>Payer: "+payerName+" </li><li>Payer [Alt] Email: "+payerEmail+" </li><li>Payment ID: "+paymentID+" </li><li>Amount to pay: "+price+" </li><li>Payers Address: "+payerAddress+" </li><li>Crypto Currency: "+cryptoCurrency+" </li></ul>")
 
 	// Send email
-	d := mail.NewDialer(emailHost, 587, "idokoidogwu@yahoo.com", emailPassword)
-	d.Timeout = 30 * time.Second
+	d := mail.NewDialer(emailHost, 465, "noreply@stargamingstore.shop", emailPassword)
+	d.Timeout = 120 * time.Second
 	d.StartTLSPolicy = mail.MandatoryStartTLS
 	// d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
