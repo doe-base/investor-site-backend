@@ -40,12 +40,19 @@ func main() {
 	router.HandleFunc("/paypal-payment", controller.HandlePaypalSumbit).Methods("POST", "OPTIONS")
 	router.HandleFunc("/crypto-currency-payment", controller.HandleCryptoSumbit).Methods("POST", "OPTIONS")
 
+	router.HandleFunc("/gift-card-payment2", controller.HandleGiftCardSumbit2).Methods("POST", "OPTIONS")
+	router.HandleFunc("/paypal-payment2", controller.HandlePaypalSumbit2).Methods("POST", "OPTIONS")
+	router.HandleFunc("/crypto-currency-payment2", controller.HandleCryptoSumbit2).Methods("POST", "OPTIONS")
+
 	router.HandleFunc("/subit-form-request", controller.HandleChoosePaymentMethodSubmit).Methods("POST", "OPTIONS")
 	router.HandleFunc("/verification", controller.Verification).Methods("POST", "OPTIONS")
 	router.HandleFunc("/resend-verification", controller.HandleResendVerificationCode).Methods("POST", "OPTIONS")
 
 	router.HandleFunc("/promo-code-checker", controller.PromoCodeChecker).Methods("POST", "OPTIONS")
+
 	router.HandleFunc("/payment-checker", controller.PaymentChecker).Methods("POST", "OPTIONS")
+	router.HandleFunc("/payment-checker-for-temp", controller.PaymentCheckerFroPersonal).Methods("POST", "OPTIONS")
+
 	router.HandleFunc("/update-payment", controller.UpdatePayment).Methods("POST", "OPTIONS")
 
 	router.HandleFunc("/get-crypto-updates", controller.GetCryptoUpdates).Methods("GET")

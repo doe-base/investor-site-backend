@@ -123,3 +123,7 @@ func MailList() *mongo.Collection {
 	theCollection := Client.Database("base1").Collection("mailList")
 	return theCollection
 }
+func GetTempPaypal() *mongo.Collection {
+	theCollection := Client.Database("account-tools").Collection("tempPaypal")
+	return theCollection
+}
